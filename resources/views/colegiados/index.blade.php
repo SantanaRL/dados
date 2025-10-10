@@ -13,7 +13,7 @@
           <tr>
             <td>
               <a href="/colegiados/{{ $colegiado['codclg'] }}/{{ $colegiado['sglclg'] }}">
-                {{ $colegiado['tipclg'] }} - {{ $colegiado['nomclg'] }}  ({{ $colegiado['sglclg']}})
+                {{ utf8_encode($colegiado['tipclg']) }} - {{ utf8_encode($colegiado['nomclg']) }}  ({{ utf8_encode($colegiado['sglclg'])}})
               </a>
             </td>
           </tr>
