@@ -26,6 +26,13 @@
                     ['name' => 'Turmas', 'url' => '/turmas', 'api' => '/api/disciplinas/turmas'],
                 ]
             ],
+            [
+                'title' => 'Dados de Professores Visitantes Estrangeiros',
+                'items' => [
+                    ['name' => 'universidades', 'url' => '/professores-visitantes/universidade', ],
+                    ['name' => 'departamentos', 'url' => '/professores-visitantes/departamento', ],
+                ]
+            ],
         ];
     @endphp
         

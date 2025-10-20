@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5dbfef64f502e9a03621a49c20a7fd80",
+    "content-hash": "c6a9a65b3ac544fe0ae84afadff7b50f",
     "packages": [
         {
             "name": "brick/math",
@@ -7227,16 +7227,16 @@
         },
         {
             "name": "uspdev/senhaunica-socialite",
-            "version": "7.3.19",
+            "version": "4.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/uspdev/senhaunica-socialite.git",
-                "reference": "f4db8f92dd26d3c718ae8a8804e10407b2505891"
+                "reference": "1e1ee4585a3984b70ecd88ec01ce7667447f6eef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/uspdev/senhaunica-socialite/zipball/f4db8f92dd26d3c718ae8a8804e10407b2505891",
-                "reference": "f4db8f92dd26d3c718ae8a8804e10407b2505891",
+                "url": "https://api.github.com/repos/uspdev/senhaunica-socialite/zipball/1e1ee4585a3984b70ecd88ec01ce7667447f6eef",
+                "reference": "1e1ee4585a3984b70ecd88ec01ce7667447f6eef",
                 "shasum": ""
             },
             "require": {
@@ -7278,9 +7278,9 @@
             "homepage": "https://github.com/uspdev/senhaunica-socialite",
             "support": {
                 "issues": "https://github.com/uspdev/senhaunica-socialite/issues",
-                "source": "https://github.com/uspdev/senhaunica-socialite/tree/7.3.19"
+                "source": "https://github.com/uspdev/senhaunica-socialite/tree/4.5.2"
             },
-            "time": "2025-04-08T14:01:14+00:00"
+            "time": "2025-09-19T11:29:55+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -9779,12 +9779,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

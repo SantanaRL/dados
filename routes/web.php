@@ -30,3 +30,8 @@ use App\Http\Controllers\DisciplinaController;
 Route::get('/turmas', [DisciplinaController::class, 'turmas']);
 Route::get('/turmas/{prefix}', [DisciplinaController::class, 'prefix']);
 Route::get('/turmas/{prefix}/concatenate', [DisciplinaController::class, 'concatenate']);
+
+#professores visitantes
+use App\Http\Controllers\Publico\ProfessoresVisitantesController;
+Route::get('/professores-visitantes/universidade', [ProfessoresVisitantesController::class, 'universidade']);
+Route::get('/professores-visitantes/departamento', [ProfessoresVisitantesController::class, 'departamento']);
