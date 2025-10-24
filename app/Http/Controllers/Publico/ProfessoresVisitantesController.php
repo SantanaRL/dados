@@ -5,6 +5,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Uspdev\Replicado\DB;
 use Illuminate\Support\Facades\Log;
+use Khill\Lavacharts\Lavacharts;
+
+use function Psy\debug;
+
 class ProfessoresVisitantesController extends Controller
 {
     public function universidade(Request $request){
@@ -28,6 +32,11 @@ class ProfessoresVisitantesController extends Controller
         $query_por_ano = str_replace('__ano__', $ano, $query);
         
         $departamentos = DB::fetchAll($query_por_ano);
-        return view('professores-visitantes.departamento',[ "departamentos" => $departamentos ]);
+
+        
+        $labels = array_map(function($v){ return $v['nomset'];},$departamentos);
+        $data = array_map(function($v){ return $v['qtd'];},$departamentos);
+        
+        return view('professores-visitantes.departamento',[ "departamentos" => $departamentos, "labels" => $labels, 'data' => $data ]);
     }
 }

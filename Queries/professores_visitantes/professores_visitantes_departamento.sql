@@ -5,4 +5,3 @@ INNER JOIN fflch.dbo.SETOR s ON (i.codsetpesrsp = s.codset AND i.codundpesrsp = 
 WHERE codundpesrsp = 8 AND s.codund = 8
 AND i.dtainiatvitb BETWEEN '__ano__-01-01 00:00:00.000' AND '__ano__-12-31 00:00:00.000'
 GROUP BY s.nomset
-ORDER BY qtd desc
