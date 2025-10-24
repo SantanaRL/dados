@@ -685,7 +685,6 @@ class ReplicadoTemp
         $tempTurmas = DB::fetchAll($query);
         $turmas =[];
 
-        //arrumar cada disciplina com um array de horários e um array de professores
 
         //arrumar cada disciplina com um array de horários e um array de professores
         foreach ($tempTurmas as $turma) {

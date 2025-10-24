@@ -63,7 +63,9 @@ class DisciplinaController extends Controller
         
         return view('disciplinas.turma',[
             'prefix' => $prefix,
-            'turmas' => $this->formataTurmas($turmas),
+            'table_labels' => [ 'Disciplina', 'Turma', 'Nome', 'Horário', 'Professor'],
+            'table_keys' => ['coddis' ,'codtur' ,'nomdis' ,'horario' , 'nompes'],
+            'table_data' => $this->formataTurmas($turmas),
         ]);
     }
 

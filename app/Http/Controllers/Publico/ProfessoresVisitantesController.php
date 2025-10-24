@@ -36,7 +36,7 @@ class ProfessoresVisitantesController extends Controller
         
         $labels = array_map(function($v){ return $v['nomset'];},$departamentos);
         $data = array_map(function($v){ return $v['qtd'];},$departamentos);
-        
-        return view('professores-visitantes.departamento',[ "departamentos" => $departamentos, "labels" => $labels, 'data' => $data ]);
+        $nm = 'Quantidade de professores';
+        return view('professores-visitantes.departamento',[ "chart_labels" => $labels, 'chart_data' => $data , 'chart_name_value' => $nm]);
     }
 }
