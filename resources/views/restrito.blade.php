@@ -70,6 +70,46 @@
         </div>
     </li>
 
+    {{-- Painel Projetos de pos-doutorandos --}}
+    <li class="list-group-item">
+        <div class="panel panel-default panel-docente">
+            <div class="panel-heading">
+                <h5 role="button" data-toggle="collapse" href="#collapsePDprojetos"  aria-controls="collapsePDprojetos" 
+                    aria-expanded="false" class="collapsed">
+                    Projetos de pos-doutorandos
+                    <span class="controller-collapse">
+                        <i class="fas fa-plus-square"></i>
+                        <i class="fas fa-minus-square"></i>  
+                    </span>
+                </h5>
+            </div>
+            <div class="panel-body collapse in" id="collapsePDprojetos">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <form action="/restrito/pdprojetos" method="GET">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <label><b>Filtrar por:</b></label>
+                                </div>     
+                                <div class="col-md-2" id="Departamento">
+                                    <select class="form-control" name="departamento">
+                                        <option selected value="">Departamento</option>
+                                        @foreach ($departamentos as $sigla => $dep)
+                                        <option value="{{$sigla}}" @if(request()->departamento == $sigla) selected @endif>{{$dep[1]}}</option>
+                                        @endforeach
+                                    </select>                        
+                                </div>                                   
+                                <div class="col-md-3"><button type="submit" class="btn btn-primary">Baixar</button></div>
+                            </div>
+                            <br>
+                            <span>*O arquivo pode demorar a ser baixado.</span>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </li>
+
 </ul>
 
 @endsection

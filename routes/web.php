@@ -20,6 +20,10 @@ Route::get('/colegiados/{codclg}/{sglclg}', [ColegiadoController::class, 'show']
 use App\Http\Controllers\Restrito\EstagiarioController;
 Route::get('/restrito/estagiarios', [EstagiarioController::class, 'index']);
 
+# Restrito: ProjetosPD
+use App\Http\Controllers\Restrito\ProjetosPDController;
+Route::get('/restrito/pdprojetos', [ProjetosPDController::class, 'listarPlanilha']);
+
 
 # Restrito...
 use App\Http\Controllers\Restrito\IntercambistasController;
