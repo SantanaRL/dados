@@ -23,6 +23,8 @@ Route::get('/restrito/estagiarios', [EstagiarioController::class, 'index']);
 # Restrito: ProjetosPD
 use App\Http\Controllers\Restrito\ProjetosPDController;
 Route::get('/restrito/pdprojetos', [ProjetosPDController::class, 'listarPlanilha']);
+Route::get('/restrito/pdprojetos/{sigla}', [ProjetosPDController::class, 'listarTabela']);
+Route::get('/restrito/pdprojetosgrafico', [ProjetosPDController::class, 'grafico']);
 
 
 # Restrito...
