@@ -34,7 +34,7 @@ class ProjetosPDController extends Controller
 
         $sigla = $request->departamento;
         if (is_null($sigla) || !(in_array($sigla,array_keys(Util::departamentos)))) {
-            return;
+            abort(404,'Departamento não existe');
         }
         $dep = Util::departamentos[$sigla];
 
@@ -62,6 +62,7 @@ class ProjetosPDController extends Controller
         Gate::authorize('admin');
 
         if (is_null($sigla) || !(in_array($sigla,array_keys(Util::departamentos)))) {
+            abort(404,'Departamento não existe');
             return;
         }
         $dep = Util::departamentos[$sigla];

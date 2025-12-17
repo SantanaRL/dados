@@ -93,7 +93,7 @@
                                 </div>     
                                 <div class="col-md-2" id="Departamento">
                                     <select class="form-control" name="departamento">
-                                        <option selected value="">Departamento</option>
+                                        <option disabled selected value="">Departamento</option>
                                         @foreach ($departamentos as $sigla => $dep)
                                         <option value="{{$sigla}}" @if(request()->departamento == $sigla) selected @endif>{{$dep[1]}}</option>
                                         @endforeach
