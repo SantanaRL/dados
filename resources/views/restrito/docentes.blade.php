@@ -165,7 +165,9 @@
                         <button class="btn btn-primary">Download</button>
                     </a>
                 </div>
-                @include('partials.simple-table',['table_data' => $dataDisciplinas])
+                <div class="table-responsive">
+                    @include('partials.simple-table',['table_data' => $dataDisciplinas])
+                </div>
                 
             @endisset
         @endslot 
