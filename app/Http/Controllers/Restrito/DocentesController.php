@@ -23,7 +23,6 @@ class DocentesController extends Controller
             'P' => "Aposentado"
         ];
     private $keysLista = ['codpes', 'nompes', 'nomset', 'tipmer', 'nomabvcla', 'nomabvfnc', 'sitatl', 'sitoco', 'dtafimvin', 'dtafimdctati'];
-    private $keysDisciplinas = ['NomeDepartamento','MeritoDocente','NUSP','NomeDocente', 'Disciplinas', 'MediaDisciplinasAno'];
     private $headerDisciplinas = ['Departamento','Mérito','NUSP','Nome', 'Disciplinas', 'Média de Disciplinas por Ano'];
     public function index(Request $request)
     {
@@ -115,7 +114,7 @@ class DocentesController extends Controller
 
 
         Gate::authorize('admin');
-        
+        $keysDisciplinas = ['NomeDepartamento','MeritoDocente','NUSP','NomeDocente', 'Disciplinas', 'Media'];
         
         $request->validate(
             [
@@ -137,17 +136,18 @@ class DocentesController extends Controller
         $nuspS = implode(", ", $nusp);
 
 
-
-        $interval = $request->fimdis-$request->inidis;
+        $interval = $request->fimdis-$request->inidis+1;
         
 
         //agrupar os semestres do periodo
         $sem= [];
         for ($i=$request->inidis; $i <= $request->fimdis ; $i++) { 
-            $sem[] = "'".$i.'1'."'";
-            $sem[] = "'".$i.'2'."'";
+            $sem[] = $i.'1';
+            $sem[] = $i.'2';
         }
-        $semS = implode(", ",$sem);
+        $keysDisciplinas = array_merge($keysDisciplinas,$sem);
+        $semS = "'".implode("', '",$sem)."'";
+
 
 
 
@@ -156,15 +156,44 @@ class DocentesController extends Controller
             "__interval__" => $interval,
             "__semestres__"=> $semS
         ]);
-        Cache::put($request->session()->getId().'docentes-disciplinas',$data,600);
+        
+        //contar as disciplinas
+        $dis_doscentes = [];
+        foreach ($data as $tur) {
+            if(array_key_exists($tur["NUSP"],$dis_doscentes)){
+                $dis_doscentes[$tur["NUSP"]][substr($tur['Turma'],0,5)][$tur['Disciplina'].substr($tur['Turma'],0,5)]=1;
+            }else{
+                $dis_doscentes[$tur["NUSP"]]=$tur;
+                foreach ($sem as $s){
+                    $dis_doscentes[$tur["NUSP"]][$s]=[];    
+                }
+                $dis_doscentes[$tur["NUSP"]][substr($tur['Turma'],0,5)][$tur['Disciplina'].substr($tur['Turma'],0,5)]=1;
+            }     
+        }
+
+        foreach ($dis_doscentes as $n => $doc) {
+            $dis_doscentes[$n]['Disciplinas']=0;
+            foreach ($sem as $s) {
+                $dis_doscentes[$n]['Disciplinas']+=count($doc[$s]);
+                $dis_doscentes[$n][$s]=count($doc[$s]);
+            }
+            $dis_doscentes[$n]['Media'] = round($dis_doscentes[$n]['Disciplinas']/$interval,3);
+            unset($dis_doscentes[$n]["Disciplina"]);
+            unset($dis_doscentes[$n]["Turma"]);
+
+        }
+
+
+        Cache::put($request->session()->getId().'docentes-disciplinas',$dis_doscentes,600);
+        Cache::put($request->session()->getId().'docentes-disciplinas-semestres',$sem,600);
         return view('restrito.docentes',
         [
             'departamentos'=>Util::departamentos, 
             'status' => $this->sitatl,
             'meritos' => $this->tipmer,
-            'dataDisciplinas' => $data,
-            'table_labels' => $this->headerDisciplinas,
-            'table_keys' => $this->keysDisciplinas
+            'dataDisciplinas' => $dis_doscentes,
+            'table_labels' => array_merge($this->headerDisciplinas,$sem),
+            'table_keys' => $keysDisciplinas
         ]);
                                         
     }
@@ -172,9 +201,14 @@ class DocentesController extends Controller
     public function planilhaDisciplinas(Request $request, Excel $excel){
         Gate::authorize('admin');
         $data = Cache::get($request->session()->getId().'docentes-disciplinas');
-        $export = new DadosExport([$data], 
-        $this->headerDisciplinas);
-         return $excel->download($export, 'Docentes - Disciplinas.xlsx');
+        $sem =  Cache::get($request->session()->getId().'docentes-disciplinas-semestres');
+
+        $head = array_slice($this->headerDisciplinas,0,count($this->headerDisciplinas)-2);
+        $head = array_merge($head,$sem);
+        $head = array_merge($head,array_slice($this->headerDisciplinas,count($this->headerDisciplinas)-2,2));
+
+        $export = new DadosExport([$data], $head);
+        return $excel->download($export, 'Docentes - Disciplinas.xlsx');
     }
 
     public function planilhaDocentes(Request $request, Excel $excel){
