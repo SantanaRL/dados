@@ -1,0 +1,34 @@
+services:
+  site:
+    build: .
+    container_name: site-dados
+    ports:
+      - "8000:80"
+    depends_on:
+      - mariadb
+    networks:
+      - cursolaravel-network
+    environment:
+      HOME: /tmp
+    user: "${UID:-1000}:${GID:-1000}"
+
+  mariadb:
+    image: mariadb:11
+    container_name: fflchdados_mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: fflchdados
+      MYSQL_USER: fflchdados
+      MYSQL_PASSWORD: fflchdados
+      MYSQL_ROOT_PASSWORD: fflchdados
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - cursolaravel-network
+
+
+networks:
+  cursolaravel-network:
+
+volumes:
+  mariadb_data:
