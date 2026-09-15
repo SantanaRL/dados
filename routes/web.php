@@ -34,6 +34,7 @@ Route::get('restrito/graduacao', [Restrito\GraduacaoController::class,'index']);
 
 Route::get('restrito/posgraduacao', [Restrito\PosGraduacaoController::class,'index']);
 Route::get('restrito/posgraduacao/eleicao', [Restrito\PosGraduacaoController::class,'listarEleicao'])->name('pos-eleicao');
+Route::get('restrito/posgraduacao/listar', [Restrito\PosGraduacaoController::class,'listar'])->name('pos-listar');
 
 Route::get('restrito/estagios', [Restrito\EstagiosController::class,'index']);
 Route::get('restrito/estagios/estagiarios', [Restrito\EstagiosController::class,'listarEstagiarios'])->name('estagiarios');
