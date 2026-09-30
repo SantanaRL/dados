@@ -8,11 +8,14 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Excel;
 use App\Exports\DadosExport;
 use App\Exports\DadosExportNoHeader;
+use App\Models\ProjetoFapesp;
 use Uspdev\Replicado\Posgraduacao;
 use App\Utils\Util;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class PosGraduacaoController extends Controller
 {
@@ -226,6 +229,63 @@ class PosGraduacaoController extends Controller
         $zip->close();
         Storage::deleteDirectory($temp);
         return response()->download($filename)->deleteFileAfterSend(true);
+
+    }
+    function fapespEstat(Excel $excel){
+        /*$dataM = ProjetoFapesp::query()->select('area', DB::raw('count(*) as bolsas'))->where('nivel','mestrado')->groupBy('area')->get()->ToArray();
+        $dataD = ProjetoFapesp::query()->select('area', DB::raw('count(*) as bolsas'))->where('nivel','doutorado')->groupBy('area')->get()->ToArray();
+        $dataDD = ProjetoFapesp::query()->select('area', DB::raw('count(*) as bolsas'))->where('nivel','doutorado direto')->groupBy('area')->get()->ToArray();
+        $data = [];
+        foreach ($dataM as $row) {
+            $r = $row['area'] ?? 'null';
+            $data[$r] = [$row['area'] ?? 0 , $row['bolsas']?? 0];
+            
+        }
+        foreach ($dataD as $row) {
+            $r = $row['area'] ?? 'null';
+            if(array_key_exists($r,$data)){
+                $data[$r][2] = $row['bolsas']?? 0;
+            }else{
+                $data[$r]=[$row['area'] ?? 0 ,0, $row['bolsas'] ?? 0];
+            }
+        }
+        foreach ($dataDD as $row) {
+            $r = $row['area'] ?? 'null';
+            if(array_key_exists($r,$data)){
+                $data[$r][4] = $row['bolsas']?? 0;
+            }else{
+                $data[$r]=[$row['area'] ?? 0 ,0,0, $row['bolsas'] ?? 0];
+            }
+        }*/
+        $dataM = ProjetoFapesp::query()->select('area','subarea', DB::raw('count(*) as bolsas'))->where('nivel','mestrado')->groupBy('area','subarea')->get()->ToArray();
+        $dataD = ProjetoFapesp::query()->select('area','subarea', DB::raw('count(*) as bolsas'))->where('nivel','doutorado')->groupBy('area','subarea')->get()->ToArray();
+        $dataDD = ProjetoFapesp::query()->select('area','subarea', DB::raw('count(*) as bolsas'))->where('nivel','doutorado direto')->groupBy('area','subarea')->get()->ToArray();
+        $data = [];
+        foreach ($dataM as $row) {
+            $r = $row['subarea'] ?? 'null';
+            $data[$r] = [$row['subarea'] ?? 0 ,$row['area'] ?? 0 , $row['bolsas']?? 0];
+            
+        }
+        foreach ($dataD as $row) {
+            $r = $row['subarea'] ?? 'null';
+            if(array_key_exists($r,$data)){
+                $data[$r][3] = $row['bolsas']?? 0;
+            }else{
+                $data[$r]=[$row['subarea'] ?? 0 ,$row['area'] ?? 0 ,0, $row['bolsas'] ?? 0];
+            }
+        }
+        foreach ($dataDD as $row) {
+            $r = $row['subarea'] ?? 'null';
+            if(array_key_exists($r,$data)){
+                $data[$r][4] = $row['bolsas']?? 0;
+            }else{
+                $data[$r]=[$row['subarea'] ?? 0 ,$row['area'] ?? 0 ,0,0, $row['bolsas'] ?? 0];
+            }
+        }
+
+        Log::alert($data);
+        $export = new DadosExport([$data], ['a','a']);
+        return $excel->download($export, 'Fapesp Pós-Graduação '.date('d-m-y').'.xlsx');   
 
     }
 
