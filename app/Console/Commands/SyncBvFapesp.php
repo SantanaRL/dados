@@ -6,6 +6,7 @@ use App\Imports\FapespImport;
 use App\Models\ProjetoFapesp;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SyncBvFapesp extends Command
@@ -44,6 +45,9 @@ class SyncBvFapesp extends Command
         //inserindo os projetos da fflch no banco de dados
         ProjetoFapesp::query()->delete();
         Excel::import(new FapespImport, storage_path('app/private/bv-bolsas.csv'));
+        unlink(storage_path('app/private/bv-bolsas.csv'));
         
+        
+
     }
 }

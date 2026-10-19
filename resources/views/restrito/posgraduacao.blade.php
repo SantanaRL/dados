@@ -101,35 +101,35 @@
         @endslot 
     @endcomponent
     @component('components.restrito-painel')
-        @slot('titulo')Bolsas Fapesp - Estatisticas  @endslot 
+        @slot('titulo')Bolsas Fapesp vigentes no Brasil  @endslot 
         @slot('nome')fapesp @endslot 
         @slot('form')
-            <form action="{{ route('pos-fapesp-estat') }}" id="form-fapesp-pos" method="GET">
+            <form action="{{ route('pos-fapesp-lista') }}" id="form-fapesp-pos-lista" method="GET">
                 <div class="row">
                     <div class="col-md-1">
                         <label><b>Filtrar por:</b></label>
                     </div>
                     <div class="col-md-3" id="programa">
                         <label for="select-programas">Programas:</label>
-                        <select class="form-control select2" id="select-programas-f" name="programas[]" onchange="programaUnico(this,'-f')" required multiple>
+                        <select class="form-control select2" id="select-programas-fl" name="programas[]" onchange="programaUnico(this,'-fl')" required multiple>
                             @foreach ($programas as $cod => $nome)
                                 <option value="{{$cod}}">{{$nome}}</option>
                             @endforeach
                         </select>       
-                        <input type="checkbox" id="todosprogramas-f" name="todosprogramas" value="todos" onchange="checkProgramas(this,'-f')">
+                        <input type="checkbox" id="todosprogramas-fl" name="todosprogramas" value="todos" onchange="checkProgramas(this,'-fl')">
                         <label for="todosprogramas"> Todos os programas</label>  <br/>  
-                        <label for="check-programas-junto"> 
-                            <input type="checkbox" id="check-programas-junto" name="junto" value="junto">
-                            Programas no mesmo arquivo</label>   
+  
                         @foreach ($programas as $cod => $nome)
-                            <input type="hidden" name="programas[]" value="{{ $cod }}" class="hprog-f"  disabled>   
+                            <input type="hidden" name="programas[]" value="{{ $cod }}" class="hprog-fl"  disabled>   
                         @endforeach        
                     </div>                                     
-                    <div class="col-md-3"><button class="btn btn-primary" type="submit" id="baixar-fapesp">Baixar</button></div>
+                    <div class="col-md-3"><button class="btn btn-primary mb-1" type="submit" id="baixar-fapesp">Baixar</button>
+                    <a href="{{ route('pos-fapesp-estat') }}" class="btn btn-primary mb-1">Baixar estatísticas gerais</a>
+                    </div>
                 </div>
                 <br>
             </form>
-            <br><span>*O arquivo pode demorar a ser baixado, não atulize a página.</span>
+            <span>*Fonte: BV Fapesp e Replicado.</span>
         @endslot 
     @endcomponent
 

@@ -83,7 +83,7 @@ class PosGraduacaoController extends Controller
                 abort(400,'programa inserido inválido');
             }
 
-            $data = Util::query('listar_posgr_por_ano_e_area',[
+            $data = Util::query('listar_posgr_eleicao',[
                 '__area__' => implode(", ",array_column($areas,"codare"))
             ]);
 
@@ -121,7 +121,7 @@ class PosGraduacaoController extends Controller
 
             //buscar alunos
             $areas = implode(", ",array_column($areas,"codare"));
-            $data = Util::query('listar_posgr_por_ano_e_area',[
+            $data = Util::query('listar_posgr_eleicao',[
                 '__area__' => $areas
             ]);
 
@@ -182,7 +182,7 @@ class PosGraduacaoController extends Controller
                 abort(400,'programa inserido inválido');
             }
 
-            $data = Util::query('listar_posgr_ativos',[
+            $data = Util::query('listar_posgr_ativos_orientador',[
                 '__area__' => implode(", ",array_column($areas,"codare"))
             ]);
 
@@ -216,7 +216,7 @@ class PosGraduacaoController extends Controller
 
             //buscar alunos
             $areas = implode(", ",array_column($areas,"codare"));
-            $data = Util::query('listar_posgr_ativos',[
+            $data = Util::query('listar_posgr_ativos_orientador',[
                 '__area__' => $areas
             ]);
 
@@ -232,59 +232,98 @@ class PosGraduacaoController extends Controller
 
     }
     function fapespEstat(Excel $excel){
-        /*$dataM = ProjetoFapesp::query()->select('area', DB::raw('count(*) as bolsas'))->where('nivel','mestrado')->groupBy('area')->get()->ToArray();
-        $dataD = ProjetoFapesp::query()->select('area', DB::raw('count(*) as bolsas'))->where('nivel','doutorado')->groupBy('area')->get()->ToArray();
-        $dataDD = ProjetoFapesp::query()->select('area', DB::raw('count(*) as bolsas'))->where('nivel','doutorado direto')->groupBy('area')->get()->ToArray();
+        $hoje = date('Y-m-d');
+
+        // Buscando quantidade de bolsistas de Mestrado, Doutorado e Doutorado Direto
+        $dataM = ProjetoFapesp::query()->select('programa', DB::raw('count(*) as bolsas'))
+            ->where('nivel','mestrado')
+            ->where('data_inicio','<=', $hoje)
+            ->where('data_termino','>=', $hoje)
+            ->groupBy('programa')->get()->ToArray();
+
+        $dataD = ProjetoFapesp::query()->select('programa', DB::raw('count(*) as bolsas'))
+            ->where('nivel','doutorado')
+            ->where('data_inicio','<=', $hoje)
+            ->where('data_termino','>=', $hoje)
+            ->groupBy('programa')->get()->ToArray();
+
+        $dataDD = ProjetoFapesp::query()->select('programa', DB::raw('count(*) as bolsas'))
+            ->where('nivel','doutorado direto')
+            ->where('data_inicio','<=', $hoje)
+            ->where('data_termino','>=', $hoje)
+            ->groupBy('programa')->get()->ToArray();
+
+
+        //Organizando os dados
         $data = [];
         foreach ($dataM as $row) {
-            $r = $row['area'] ?? 'null';
-            $data[$r] = [$row['area'] ?? 0 , $row['bolsas']?? 0];
+            $r = $row['programa'] ?? 'null';
+            $data[$r] = [$row['programa'] ?? 0 , $row['bolsas']?? 0,0,0];
             
         }
         foreach ($dataD as $row) {
-            $r = $row['area'] ?? 'null';
+            if (is_null($row['programa'])) continue;
+
+            $r = $row['programa'];
             if(array_key_exists($r,$data)){
                 $data[$r][2] = $row['bolsas']?? 0;
             }else{
-                $data[$r]=[$row['area'] ?? 0 ,0, $row['bolsas'] ?? 0];
+                $data[$r]=[$row['programa'] ?? 0 ,0, $row['bolsas'] ?? 0];
             }
         }
         foreach ($dataDD as $row) {
-            $r = $row['area'] ?? 'null';
-            if(array_key_exists($r,$data)){
-                $data[$r][4] = $row['bolsas']?? 0;
-            }else{
-                $data[$r]=[$row['area'] ?? 0 ,0,0, $row['bolsas'] ?? 0];
-            }
-        }*/
-        $dataM = ProjetoFapesp::query()->select('area','subarea', DB::raw('count(*) as bolsas'))->where('nivel','mestrado')->groupBy('area','subarea')->get()->ToArray();
-        $dataD = ProjetoFapesp::query()->select('area','subarea', DB::raw('count(*) as bolsas'))->where('nivel','doutorado')->groupBy('area','subarea')->get()->ToArray();
-        $dataDD = ProjetoFapesp::query()->select('area','subarea', DB::raw('count(*) as bolsas'))->where('nivel','doutorado direto')->groupBy('area','subarea')->get()->ToArray();
-        $data = [];
-        foreach ($dataM as $row) {
-            $r = $row['subarea'] ?? 'null';
-            $data[$r] = [$row['subarea'] ?? 0 ,$row['area'] ?? 0 , $row['bolsas']?? 0];
-            
-        }
-        foreach ($dataD as $row) {
-            $r = $row['subarea'] ?? 'null';
+            if (is_null($row['programa'])) continue;
+
+            $r = $row['programa'];
             if(array_key_exists($r,$data)){
                 $data[$r][3] = $row['bolsas']?? 0;
             }else{
-                $data[$r]=[$row['subarea'] ?? 0 ,$row['area'] ?? 0 ,0, $row['bolsas'] ?? 0];
-            }
-        }
-        foreach ($dataDD as $row) {
-            $r = $row['subarea'] ?? 'null';
-            if(array_key_exists($r,$data)){
-                $data[$r][4] = $row['bolsas']?? 0;
-            }else{
-                $data[$r]=[$row['subarea'] ?? 0 ,$row['area'] ?? 0 ,0,0, $row['bolsas'] ?? 0];
+                $data[$r]=[$row['programa'] ?? 0 ,0,0, $row['bolsas'] ?? 0];
             }
         }
 
-        Log::alert($data);
-        $export = new DadosExport([$data], ['a','a']);
+        //Log::alert($data);
+        $export = new DadosExport([$data], ['programa', 'Mestrado','Doutorado', 'Doutorado Direto']);
+        return $excel->download($export, 'Fapesp Pós-Graduação '.date('d-m-y').'.xlsx');   
+
+    }
+
+    function fapespLista(Excel $excel, Request $request){
+        Gate::authorize('admin');
+
+        $request->validate(
+            [
+                'programas.*' =>  'integer'
+            ]
+        );
+        $prg = $request->programas;
+
+        $aux_programas = Posgraduacao::programas(8);
+        //eleiminar repetiçao de programas com varias areas;
+        $todos_programas = [];
+        foreach ($aux_programas as $pr) {
+            $todos_programas[$pr["codcur"]]=$pr["nomcur"];
+        };
+
+
+        
+        if (is_null($prg)) {
+            abort(400,'insira um programa válido');
+        }
+
+        $programas = [];
+        foreach ($prg as $pr) {
+            if(isset($todos_programas[$pr])) $programas[] = $todos_programas[$pr] ;
+        }
+
+        $data = ProjetoFapesp::query()->select('nusp','bolsista','nivel','programa','pesquisador_responsavel','data_inicio','data_termino','updated_at')
+            ->whereIn('programa',$programas)
+            ->whereIn('nivel', ['mestrado', 'doutorado','doutorado direto'])
+            ->orderBy('programa')
+            ->orderBy('nivel')->get()->ToArray();
+
+
+        $export = new DadosExport([$data], ['nusp','bolsista','nível','programa','pesquisador responsável','data início','data término','updated_at']);
         return $excel->download($export, 'Fapesp Pós-Graduação '.date('d-m-y').'.xlsx');   
 
     }

@@ -18,12 +18,14 @@ return new class extends Migration
             $table->string('processo');
             $table->string('pesquisador_responsavel');
             $table->string('bolsista');
+            $table->string('nusp')->nullable();
+            $table->string('programa')->nullable();
             $table->string('nivel');
-            $table->string('grande_area')->nullable();;
-            $table->string('area')->nullable();;
-            $table->string('subarea')->nullable();;
-            $table->dateTime('data_inicio')->nullable();;
-            $table->dateTime('data_termino')->nullable();;
+            $table->string('grande_area')->nullable();
+            $table->string('area')->nullable();
+            $table->string('subarea')->nullable();
+            $table->dateTime('data_inicio')->nullable();
+            $table->dateTime('data_termino')->nullable();
         });
     }
 
